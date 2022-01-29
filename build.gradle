@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "co.uzzu.dotenv.gradle" version "1.2.0"
+}
+
+group 'net.frooastside'
+version property('version')
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+javadoc.options.encoding = 'UTF-8'
+
+repositories {
+    mavenLocal()
+    maven {
+        url 'https://m2.dv8tion.net/releases'
+    }
+    mavenCentral()
+}
+dependencies {
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.4'
+    implementation 'com.sedmelluq:lavaplayer:1.3.77'
+    implementation 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
+    implementation 'ch.qos.logback:logback-classic:1.2.10'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+application {
+    mainClass = 'net.frooastside.erde.Erde'
+}
+
+run {
+    args = ['-t', env.TOKEN.value, '-p', env.PREFIX.value]
+    systemProperty 'java.library.path', "$rootDir/natives/"
+}
+
+task natives(type: Sync) {
+    def jars = sourceSets.main.runtimeClasspath.files
+    def natives = jars.findAll { it.name.contains('natives') }
+    natives.each {
+        from zipTree(it).files
+        include '**/*.dll', '**/*.so', '**/*.dylib'
+        into file("$rootDir/natives/")
+    }
+}
+
+build.dependsOn(natives)
+
+test {
+    useJUnitPlatform()
+}
