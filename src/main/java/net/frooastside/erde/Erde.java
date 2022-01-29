@@ -15,7 +15,6 @@ import net.frooastside.erde.messages.EventAdapter;
 import net.frooastside.erde.music.AudioClient;
 
 import javax.security.auth.login.LoginException;
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;

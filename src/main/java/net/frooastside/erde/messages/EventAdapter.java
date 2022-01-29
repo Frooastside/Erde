@@ -18,7 +18,7 @@ import java.util.List;
 
 public class EventAdapter extends ListenerAdapter {
 
-  private static final List<String> COMMAND_CHANNEL_NAMES = Arrays.asList("boot", "Boot", "commands", "Commands", "bot", "Bot", "\uD83E\uDD16");
+  private static final List<String> COMMAND_CHANNEL_NAMES = Arrays.asList("boot", "Boot", "commands", "Commands", "bot", "Bot", "🤖");
   private final List<ChatHandler> chatHandlers = new ArrayList<>();
   private final Erde erde;
 
@@ -50,7 +50,7 @@ public class EventAdapter extends ListenerAdapter {
         return;
       }
     }
-    event.getGuild().createTextChannel("\uD83E\uDD16-bot-commands").queue(textChannel -> erde.textChannels().put(event.getGuild().getIdLong(), textChannel));
+    event.getGuild().createTextChannel("🤖-bot-commands").queue(textChannel -> erde.textChannels().put(event.getGuild().getIdLong(), textChannel));
   }
 
   @Override
@@ -64,7 +64,7 @@ public class EventAdapter extends ListenerAdapter {
           Erde.sendEmbed(erde.textChannel(event.getGuild().getIdLong()), new Feedback(I18n.get("error.wrong-channel", event.getAuthor().getAsMention()), Feedback.Status.NEGATIVE));
         }
       }
-    }else {
+    } else {
       if (event.getMessage().getContentRaw().startsWith(erde.prefix())) {
         chatHandlers.stream().filter(ChatHandler::privateMessagesAllowed).forEach(chatHandler -> chatHandler.handleChatEvent(event));
       }
