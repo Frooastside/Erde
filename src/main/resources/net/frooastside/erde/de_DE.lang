@@ -20,3 +20,10 @@ error.no-permission=Du hast keine Berechtigungen für diesen Befehl!
 error.not-enough-arguments=Irgendwas stimmt hier nicht. Damit kann ich nichts anfangen!
 error.no-voice-channel=Du bist in keinem Sprachkanal dem ich beitreten kann!
 error.wrong-channel=%s bitte benutzte Befehle für mich bitte nur in dem dafür vorgesehenen Kanal!
+
+private-channels.category=[NAME]'s Ecke:[NAME]'s Haus:[NAME]'s Stube:[NAME]'s Galaxie:[NAME]'s Universum:[NAME]'s Keller:[NAME]'s Garten
+private-channels.control=einstellungen
+private-channels.text=chat
+private-channels.voice=[NAME]'s Esstisch:[NAME]'s Zimmer:[NAME]'s Planet:[NAME]'s Kellerraum
+
+private-channels.settings.privacy=Möchtest du das andere deinen Bereich sehen?

@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.frooastside.erde.channels.PrivateChannelEventAdapter;
 import net.frooastside.erde.language.I18n;
 import net.frooastside.erde.language.Language;
 import net.frooastside.erde.messages.EventAdapter;
@@ -69,7 +70,7 @@ public class Erde {
 
     remotePlayerManager = new DefaultAudioPlayerManager();
     AudioSourceManagers.registerRemoteSources(remotePlayerManager);
-    api.addEventListener(new EventAdapter(this));
+    api.addEventListener(new EventAdapter(this), new PrivateChannelEventAdapter(this));
   }
 
   public GuildVoiceState fetchGuildVoiceState(User user) {

@@ -34,12 +34,18 @@ public class EventAdapter extends ListenerAdapter {
 
   @Override
   public void onReady(@NotNull ReadyEvent event) {
-    System.out.println("Ready Event");
+
   }
 
   @Override
   public void onGuildJoin(@NotNull GuildJoinEvent event) {
-    System.out.println("Ready Event");
+    for (TextChannel textChannel : event.getGuild().getTextChannels()) {
+      if (COMMAND_CHANNEL_NAMES.stream().anyMatch(commandChannelName -> textChannel.getName().contains(commandChannelName))) {
+        erde.textChannels().put(event.getGuild().getIdLong(), textChannel);
+        return;
+      }
+    }
+    event.getGuild().createTextChannel("🤖-bot-commands").queue(textChannel -> erde.textChannels().put(event.getGuild().getIdLong(), textChannel));
   }
 
   @Override
@@ -70,5 +76,4 @@ public class EventAdapter extends ListenerAdapter {
       }
     }
   }
-
 }

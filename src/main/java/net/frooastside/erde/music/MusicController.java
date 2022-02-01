@@ -41,7 +41,7 @@ public class MusicController {
   }
 
   public Feedback currentTitle(AudioClient audioClient) {
-    return new Feedback(I18n.get("music.queue.current", audioClient.currentTrack().getInfo().title), Feedback.Status.NEUTRAL);
+    return new Feedback(audioClient.currentTrack() != null ? I18n.get("music.queue.current") : I18n.get("music.queue.empty"), Feedback.Status.NEUTRAL);
   }
 
   public Feedback skip(AudioClient audioClient) {
