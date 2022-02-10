@@ -27,3 +27,7 @@ private-channels.text=chat
 private-channels.voice=[NAME]'s Esstisch:[NAME]'s Zimmer:[NAME]'s Planet:[NAME]'s Kellerraum
 
 private-channels.settings.privacy=Möchtest du das andere deinen Bereich sehen?
+private-channels.settings.privacy.public=Öffentlich
+private-channels.settings.privacy.private=Versteckt
+private-channels.settings.privacy.already=Der Bereich ist bereits %s!
+private-channels.settings.privacy.successful=Die Sichtbarkeit wurde erfolgreich aktualisiert.

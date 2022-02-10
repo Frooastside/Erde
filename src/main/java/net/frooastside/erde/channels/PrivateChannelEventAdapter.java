@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.frooastside.erde.Erde;
 import org.jetbrains.annotations.NotNull;
@@ -41,14 +41,14 @@ public class PrivateChannelEventAdapter extends ListenerAdapter {
     for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
       if (voiceChannel.getName().contains(LOCKED_PRIVATE_CHANNEL_MARKER)) {
         lockedPrivateChannelCreatorExists = true;
-      }else if(voiceChannel.getName().contains(UNLOCKED_PRIVATE_CHANNEL_MARKER)) {
+      } else if (voiceChannel.getName().contains(UNLOCKED_PRIVATE_CHANNEL_MARKER)) {
         unlockedPrivateChannelCreatorExists = true;
       }
     }
-    if(!lockedPrivateChannelCreatorExists) {
+    if (!lockedPrivateChannelCreatorExists) {
       guild.createVoiceChannel(LOCKED_PRIVATE_CHANNEL_MARKER + " create channel").queue();
     }
-    if(!unlockedPrivateChannelCreatorExists) {
+    if (!unlockedPrivateChannelCreatorExists) {
       guild.createVoiceChannel(UNLOCKED_PRIVATE_CHANNEL_MARKER + " create channel").queue();
     }
   }
@@ -107,11 +107,10 @@ public class PrivateChannelEventAdapter extends ListenerAdapter {
   }
 
   @Override
-  public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
-    if(PrivateChannelGroup.TEXT_CONTROLLERS.containsKey(event.getChannel().getIdLong())) {
+  public void onGenericComponentInteractionCreate(@NotNull GenericComponentInteractionCreateEvent event) {
+    if (PrivateChannelGroup.TEXT_CONTROLLERS.containsKey(event.getChannel().getIdLong())) {
       PrivateChannelGroup privateChannelGroup = PrivateChannelGroup.TEXT_CONTROLLERS.get(event.getChannel().getIdLong());
-      privateChannelGroup.handleControlReaction(event);
+      privateChannelGroup.handleInteraction(event);
     }
   }
-
 }

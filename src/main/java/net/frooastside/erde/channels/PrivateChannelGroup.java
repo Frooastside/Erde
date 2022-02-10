@@ -5,7 +5,10 @@ import com.google.common.collect.HashBiMap;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.Component;
 import net.frooastside.erde.Erde;
 import net.frooastside.erde.language.I18n;
 
@@ -16,18 +19,18 @@ import java.util.Random;
 
 public class PrivateChannelGroup {
 
-  private static final String LOCKED_PRIVATE_CHANNEL_MARKER = "🔒";
-  private static final String UNLOCKED_PRIVATE_CHANNEL_MARKER = "🔓";
   public transient static final BiMap<Long, PrivateChannelGroup> OWNERS = HashBiMap.create();
   public transient static final BiMap<Long, PrivateChannelGroup> TEXT_CONTROLLERS = HashBiMap.create();
   public transient static final BiMap<Long, PrivateChannelGroup> VOICE_CHANNELS = HashBiMap.create();
+  private static final String PRIVATE_CHANNEL_ID = "pcg::private";
+  private static final String PUBLIC_CHANNEL_ID = "pcg::public";
   private transient final Erde erde;
   private final long guild;
-  private boolean locked;
   private final long category;
   private final long textControlChannel;
   private final long textChannel;
   private final long voiceChannel;
+  private boolean locked;
   private long owner;
   private AccessRole memberRole;
 
@@ -54,7 +57,7 @@ public class PrivateChannelGroup {
         Member previousOwner = guild.getMemberById(previousOwnerId);
         if (previousOwner != null) {
           PermissionOverride permissionOverride = privateChannelGroup.textControlChannel().getPermissionOverride(previousOwner);
-          if(permissionOverride != null) {
+          if (permissionOverride != null) {
             permissionOverride.delete().queue();
           }
         }
@@ -189,23 +192,39 @@ public class PrivateChannelGroup {
       .setDescription(I18n.get("private-channels.settings.privacy"))
       .setColor(Color.RED);
     textControlChannel().sendMessageEmbeds(builder.build())
-      .queue(message -> message.addReaction(locked() ? UNLOCKED_PRIVATE_CHANNEL_MARKER : LOCKED_PRIVATE_CHANNEL_MARKER).queue());
+      .flatMap(message -> message.editMessageComponents(ActionRow.of(
+        Button.success(PUBLIC_CHANNEL_ID, I18n.get("private-channels.settings.privacy.public")),
+        Button.danger(PRIVATE_CHANNEL_ID, I18n.get("private-channels.settings.privacy.private"))))).queue();
   }
 
-  public void handleControlReaction(MessageReactionAddEvent event) {
-    String emoji = event.getReactionEmote().getAsReactionCode();
-    if(event.getMember() != null && event.getGuild().getSelfMember().getIdLong() != event.getMember().getIdLong()) {
-      if((emoji.equals(LOCKED_PRIVATE_CHANNEL_MARKER) && !locked()) || (emoji.equals(UNLOCKED_PRIVATE_CHANNEL_MARKER) && locked())) {
-        if(emoji.equals(LOCKED_PRIVATE_CHANNEL_MARKER)) {
-          lock();
-          textControlChannel().retrieveMessageById(event.getMessageId())
-            .flatMap(message -> message.clearReactions(emoji).flatMap(unused -> message.addReaction(UNLOCKED_PRIVATE_CHANNEL_MARKER)))
-            .queue();
-        }else {
+  public void handleInteraction(GenericComponentInteractionCreateEvent event) {
+    Component component = event.getComponent();
+    if (component != null) {
+      if (PUBLIC_CHANNEL_ID.equals(component.getId())) {
+        if (locked()) {
           unlock();
-          textControlChannel().retrieveMessageById(event.getMessageId())
-            .flatMap(message -> message.clearReactions(emoji).flatMap(unused -> message.addReaction(LOCKED_PRIVATE_CHANNEL_MARKER)))
-            .queue();
+          EmbedBuilder builder = new EmbedBuilder()
+            .setDescription(I18n.get("private-channels.settings.privacy.successful"))
+            .setColor(Color.GREEN);
+          event.deferReply(true).addEmbeds(builder.build()).queue();
+        } else {
+          EmbedBuilder builder = new EmbedBuilder()
+            .setDescription(I18n.get("private-channels.settings.privacy.already", I18n.get("private-channels.settings.privacy.public")))
+            .setColor(Color.RED);
+          event.deferReply(true).addEmbeds(builder.build()).queue();
+        }
+      } else if (PRIVATE_CHANNEL_ID.equals(component.getId())) {
+        if (!locked()) {
+          lock();
+          EmbedBuilder builder = new EmbedBuilder()
+            .setDescription(I18n.get("private-channels.settings.privacy.successful"))
+            .setColor(Color.GREEN);
+          event.deferReply(true).addEmbeds(builder.build()).queue();
+        } else {
+          EmbedBuilder builder = new EmbedBuilder()
+            .setDescription(I18n.get("private-channels.settings.privacy.already", I18n.get("private-channels.settings.privacy.private")))
+            .setColor(Color.RED);
+          event.deferReply(true).addEmbeds(builder.build()).queue();
         }
       }
     }
