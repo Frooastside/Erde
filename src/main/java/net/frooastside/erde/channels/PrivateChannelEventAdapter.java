@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.frooastside.erde.Erde;
 import org.jetbrains.annotations.NotNull;

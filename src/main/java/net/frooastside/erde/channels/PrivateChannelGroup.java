@@ -5,10 +5,9 @@ import com.google.common.collect.HashBiMap;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.Component;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.frooastside.erde.Erde;
 import net.frooastside.erde.language.I18n;
 
@@ -198,34 +197,31 @@ public class PrivateChannelGroup {
   }
 
   public void handleInteraction(GenericComponentInteractionCreateEvent event) {
-    Component component = event.getComponent();
-    if (component != null) {
-      if (PUBLIC_CHANNEL_ID.equals(component.getId())) {
-        if (locked()) {
-          unlock();
-          EmbedBuilder builder = new EmbedBuilder()
-            .setDescription(I18n.get("private-channels.settings.privacy.successful"))
-            .setColor(Color.GREEN);
-          event.deferReply(true).addEmbeds(builder.build()).queue();
-        } else {
-          EmbedBuilder builder = new EmbedBuilder()
-            .setDescription(I18n.get("private-channels.settings.privacy.already", I18n.get("private-channels.settings.privacy.public")))
-            .setColor(Color.RED);
-          event.deferReply(true).addEmbeds(builder.build()).queue();
-        }
-      } else if (PRIVATE_CHANNEL_ID.equals(component.getId())) {
-        if (!locked()) {
-          lock();
-          EmbedBuilder builder = new EmbedBuilder()
-            .setDescription(I18n.get("private-channels.settings.privacy.successful"))
-            .setColor(Color.GREEN);
-          event.deferReply(true).addEmbeds(builder.build()).queue();
-        } else {
-          EmbedBuilder builder = new EmbedBuilder()
-            .setDescription(I18n.get("private-channels.settings.privacy.already", I18n.get("private-channels.settings.privacy.private")))
-            .setColor(Color.RED);
-          event.deferReply(true).addEmbeds(builder.build()).queue();
-        }
+    if (PUBLIC_CHANNEL_ID.equals(event.getComponentId())) {
+      if (locked()) {
+        unlock();
+        EmbedBuilder builder = new EmbedBuilder()
+          .setDescription(I18n.get("private-channels.settings.privacy.successful"))
+          .setColor(Color.GREEN);
+        event.deferReply(true).addEmbeds(builder.build()).queue();
+      } else {
+        EmbedBuilder builder = new EmbedBuilder()
+          .setDescription(I18n.get("private-channels.settings.privacy.already", I18n.get("private-channels.settings.privacy.public")))
+          .setColor(Color.RED);
+        event.deferReply(true).addEmbeds(builder.build()).queue();
+      }
+    } else if (PRIVATE_CHANNEL_ID.equals(event.getComponentId())) {
+      if (!locked()) {
+        lock();
+        EmbedBuilder builder = new EmbedBuilder()
+          .setDescription(I18n.get("private-channels.settings.privacy.successful"))
+          .setColor(Color.GREEN);
+        event.deferReply(true).addEmbeds(builder.build()).queue();
+      } else {
+        EmbedBuilder builder = new EmbedBuilder()
+          .setDescription(I18n.get("private-channels.settings.privacy.already", I18n.get("private-channels.settings.privacy.private")))
+          .setColor(Color.RED);
+        event.deferReply(true).addEmbeds(builder.build()).queue();
       }
     }
   }
