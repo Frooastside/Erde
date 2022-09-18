@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.frooastside.erde.channels.PrivateChannelEventAdapter;
 import net.frooastside.erde.language.I18n;
 import net.frooastside.erde.language.Language;
@@ -44,7 +45,7 @@ public class Erde {
     if (!options.has("t")) {
       throw new IllegalArgumentException("I need an API Token!");
     }
-    JDA jda = JDABuilder.createDefault((String) options.valueOf("t")).build();
+    JDA jda = JDABuilder.createDefault((String) options.valueOf("t")).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
     Erde erde = new Erde(jda, options.has("p") ? (String) options.valueOf("p") : "!");
     erde.initialize();
   }
