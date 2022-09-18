@@ -1,13 +1,13 @@
 package net.frooastside.erde.channels;
 
+import java.util.Objects;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.UserSnowflake;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.frooastside.erde.Erde;
-
-import java.util.Objects;
 
 public class AccessRole {
 
@@ -26,10 +26,7 @@ public class AccessRole {
     if (guild != null) {
       Category category = guild.getCategoryById(categoryId);
       if (category != null) {
-        category.createPermissionOverride(role()).setAllow(
-          Permission.VIEW_CHANNEL,
-          Permission.MESSAGE_SEND,
-          Permission.VOICE_CONNECT).queue();
+        category.upsertPermissionOverride(role()).grant(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.VOICE_CONNECT).queue();
       }
     }
   }
@@ -39,10 +36,7 @@ public class AccessRole {
     if (guild != null) {
       Category category = guild.getCategoryById(categoryId);
       if (category != null) {
-        category.createPermissionOverride(role()).setDeny(
-          Permission.VIEW_CHANNEL,
-          Permission.MESSAGE_SEND,
-          Permission.VOICE_CONNECT).queue();
+        category.upsertPermissionOverride(role()).deny(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.VOICE_CONNECT).queue();
       }
     }
   }
@@ -52,10 +46,7 @@ public class AccessRole {
     if (guild != null) {
       TextChannel textChannel = guild.getTextChannelById(channel);
       if (textChannel != null) {
-        textChannel.createPermissionOverride(role()).setAllow(
-          Permission.VIEW_CHANNEL,
-          Permission.MESSAGE_SEND,
-          Permission.VOICE_CONNECT).queue();
+        textChannel.upsertPermissionOverride(role()).grant(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.VOICE_CONNECT).queue();
       }
     }
   }
@@ -65,10 +56,7 @@ public class AccessRole {
     if (guild != null) {
       TextChannel textChannel = guild.getTextChannelById(channel);
       if (textChannel != null) {
-        textChannel.createPermissionOverride(role()).setDeny(
-          Permission.VIEW_CHANNEL,
-          Permission.MESSAGE_SEND,
-          Permission.VOICE_CONNECT).queue();
+        textChannel.upsertPermissionOverride(role()).deny(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.VOICE_CONNECT).queue();
       }
     }
   }
@@ -76,14 +64,14 @@ public class AccessRole {
   public void addUser(long user) {
     Guild guild = guild();
     if (guild != null) {
-      guild.addRoleToMember(user, role()).queue();
+      guild.addRoleToMember(UserSnowflake.fromId(user), role()).queue();
     }
   }
 
   public void removeUser(long user) {
     Guild guild = guild();
     if (guild != null) {
-      guild.removeRoleFromMember(user, role()).queue();
+      guild.removeRoleFromMember(UserSnowflake.fromId(user), role()).queue();
     }
   }
 

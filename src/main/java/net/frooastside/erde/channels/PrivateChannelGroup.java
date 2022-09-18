@@ -2,25 +2,30 @@ package net.frooastside.erde.channels;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import java.awt.Color;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Random;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.frooastside.erde.Erde;
 import net.frooastside.erde.language.I18n;
 
-import java.awt.*;
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Random;
-
 public class PrivateChannelGroup {
 
-  public transient static final BiMap<Long, PrivateChannelGroup> OWNERS = HashBiMap.create();
-  public transient static final BiMap<Long, PrivateChannelGroup> TEXT_CONTROLLERS = HashBiMap.create();
-  public transient static final BiMap<Long, PrivateChannelGroup> VOICE_CHANNELS = HashBiMap.create();
+  public static final BiMap<Long, PrivateChannelGroup> OWNERS = HashBiMap.create();
+  public static final BiMap<Long, PrivateChannelGroup> TEXT_CONTROLLERS = HashBiMap.create();
+  public static final BiMap<Long, PrivateChannelGroup> VOICE_CHANNELS = HashBiMap.create();
   private static final String PRIVATE_CHANNEL_ID = "pcg::private";
   private static final String PUBLIC_CHANNEL_ID = "pcg::public";
   private transient final Erde erde;
@@ -62,7 +67,7 @@ public class PrivateChannelGroup {
         }
         Member nextOwner = guild.getMemberById(user);
         if (nextOwner != null) {
-          privateChannelGroup.textControlChannel().createPermissionOverride(nextOwner).setAllow(Permission.VIEW_CHANNEL).queue();
+          privateChannelGroup.textControlChannel().upsertPermissionOverride(nextOwner).grant(Permission.VIEW_CHANNEL).queue();
         }
       }
     }
@@ -155,7 +160,7 @@ public class PrivateChannelGroup {
   public void lock() {
     Category category = category();
     if (category != null) {
-      category.putPermissionOverride(guild().getPublicRole()).setDeny(
+      category.upsertPermissionOverride(guild().getPublicRole()).deny(
         Permission.VIEW_CHANNEL,
         Permission.MESSAGE_SEND,
         Permission.VOICE_CONNECT).queue(permissionOverride -> locked = true);
@@ -165,11 +170,11 @@ public class PrivateChannelGroup {
   public void unlock() {
     Category category = category();
     if (category != null) {
-      category.putPermissionOverride(guild().getPublicRole()).setAllow(
+      category.upsertPermissionOverride(guild().getPublicRole()).grant(
           Permission.VIEW_CHANNEL,
           Permission.MESSAGE_SEND,
           Permission.VOICE_CONNECT)
-        .flatMap(permissionOverride -> textControlChannel().putPermissionOverride(guild().getPublicRole()).setDeny(
+        .flatMap(permissionOverride -> textControlChannel().upsertPermissionOverride(guild().getPublicRole()).deny(
           Permission.VIEW_CHANNEL,
           Permission.MESSAGE_SEND,
           Permission.MESSAGE_ADD_REACTION,

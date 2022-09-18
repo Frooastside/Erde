@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:5.0.0-alpha.9'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.19'
     implementation 'com.sedmelluq:lavaplayer:1.3.78'
     implementation 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
     implementation 'ch.qos.logback:logback-classic:1.4.0'
@@ -45,6 +45,7 @@ task natives(type: Sync) {
     natives.each {
         from zipTree(it).files
         include '**/*.dll', '**/*.so', '**/*.dylib'
+        duplicatesStrategy DuplicatesStrategy.INHERIT
         into file("$rootDir/natives/")
     }
 }

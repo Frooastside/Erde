@@ -3,22 +3,25 @@ package net.frooastside.erde;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.frooastside.erde.channels.PrivateChannelEventAdapter;
 import net.frooastside.erde.language.I18n;
 import net.frooastside.erde.language.Language;
 import net.frooastside.erde.messages.EventAdapter;
 import net.frooastside.erde.music.AudioClient;
-
-import javax.security.auth.login.LoginException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Erde {
 
@@ -41,13 +44,9 @@ public class Erde {
     if (!options.has("t")) {
       throw new IllegalArgumentException("I need an API Token!");
     }
-    try {
-      JDA jda = JDABuilder.createDefault((String) options.valueOf("t")).build();
-      Erde erde = new Erde(jda, options.has("p") ? (String) options.valueOf("p") : "!");
-      erde.initialize();
-    } catch (LoginException exception) {
-      throw new IllegalStateException(exception);
-    }
+    JDA jda = JDABuilder.createDefault((String) options.valueOf("t")).build();
+    Erde erde = new Erde(jda, options.has("p") ? (String) options.valueOf("p") : "!");
+    erde.initialize();
   }
 
   public static void sendEmbed(MessageChannel messageChannel, Feedback feedback) {

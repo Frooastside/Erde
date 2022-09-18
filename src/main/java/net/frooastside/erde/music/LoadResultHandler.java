@@ -4,12 +4,11 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import java.awt.Color;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.frooastside.erde.Erde;
 import net.frooastside.erde.Feedback;
 import net.frooastside.erde.language.I18n;
-
-import java.awt.*;
 
 public class LoadResultHandler implements AudioLoadResultHandler {
 

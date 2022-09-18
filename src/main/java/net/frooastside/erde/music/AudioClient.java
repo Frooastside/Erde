@@ -5,15 +5,14 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
-import net.dv8tion.jda.api.audio.AudioSendHandler;
-import net.dv8tion.jda.api.entities.AudioChannel;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.managers.AudioManager;
-import net.frooastside.erde.Erde;
-
 import java.nio.ByteBuffer;
 import java.util.Deque;
 import java.util.concurrent.LinkedBlockingDeque;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.managers.AudioManager;
+import net.frooastside.erde.Erde;
 
 public class AudioClient extends AudioEventAdapter implements AudioSendHandler {
 

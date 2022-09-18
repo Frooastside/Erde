@@ -1,8 +1,9 @@
 package net.frooastside.erde.channels;
 
-import net.dv8tion.jda.api.entities.AudioChannel;
+import java.util.stream.Stream;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -12,8 +13,6 @@ import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteract
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.frooastside.erde.Erde;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.stream.Stream;
 
 public class PrivateChannelEventAdapter extends ListenerAdapter {
 

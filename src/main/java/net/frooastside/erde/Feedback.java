@@ -1,6 +1,6 @@
 package net.frooastside.erde;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class Feedback {
 

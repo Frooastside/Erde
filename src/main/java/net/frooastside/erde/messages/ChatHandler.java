@@ -1,10 +1,9 @@
 package net.frooastside.erde.messages;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.frooastside.erde.Erde;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.frooastside.erde.Erde;
 
 public abstract class ChatHandler {
 
