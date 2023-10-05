@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -29,11 +28,6 @@ public class EventAdapter extends ListenerAdapter {
   public void initialize() {
     chatHandlers.add(new MusicChatHandler(erde));
     chatHandlers.forEach(ChatHandler::registerCommands);
-  }
-
-  @Override
-  public void onReady(@NotNull ReadyEvent event) {
-
   }
 
   @Override

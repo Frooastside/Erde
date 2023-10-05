@@ -6,9 +6,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.frooastside.erde.Erde;
@@ -53,55 +51,51 @@ public class PrivateChannelEventAdapter extends ListenerAdapter {
   }
 
   @Override
-  public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
-    if (Stream.of(
-      LOCKED_PRIVATE_CHANNEL_MARKER,
-      UNLOCKED_PRIVATE_CHANNEL_MARKER).anyMatch(createChannelName -> event.getChannelJoined().getName().contains(createChannelName))) {
-      PrivateChannelGroup.create(erde, event.getGuild(), event.getMember().getUser(), event.getChannelJoined().getName().contains(LOCKED_PRIVATE_CHANNEL_MARKER));
-    }
-  }
-
-  @Override
-  public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
-    PrivateChannelGroup privateChannelGroup = PrivateChannelGroup.VOICE_CHANNELS.get(event.getChannelLeft().getIdLong());
-    if (privateChannelGroup != null) {
-      VoiceChannel voiceChannel = privateChannelGroup.voiceChannel();
-      if (voiceChannel != null) {
-        if (voiceChannel.getMembers().isEmpty()) {
-          PrivateChannelGroup.delete(privateChannelGroup);
-        } else if (event.getMember().getIdLong() == privateChannelGroup.ownerId()) {
-          PrivateChannelGroup.promote(privateChannelGroup, voiceChannel.getMembers().get(0).getIdLong());
+  public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
+    if(event.getChannelLeft() != null && event.getChannelJoined() != null) {
+      PrivateChannelGroup privateChannelGroup = PrivateChannelGroup.VOICE_CHANNELS.get(event.getChannelLeft().getIdLong());
+      if (privateChannelGroup != null) {
+        VoiceChannel voiceChannel = privateChannelGroup.voiceChannel();
+        if (voiceChannel != null) {
+          if (voiceChannel.getMembers().isEmpty()) {
+            PrivateChannelGroup.delete(privateChannelGroup);
+          } else if (event.getMember().getIdLong() == privateChannelGroup.ownerId()) {
+            PrivateChannelGroup.promote(privateChannelGroup, voiceChannel.getMembers().get(0).getIdLong());
+          }
         }
       }
-    }
-    AudioChannel channelJoined = event.getChannelJoined();
-    if (channelJoined != null) {
+      AudioChannel channelJoined = event.getChannelJoined();
       if (Stream.of(
         LOCKED_PRIVATE_CHANNEL_MARKER,
         UNLOCKED_PRIVATE_CHANNEL_MARKER).anyMatch(createChannelName -> channelJoined.getName().contains(createChannelName))) {
         PrivateChannelGroup.create(erde, event.getGuild(), event.getMember().getUser(), event.getChannelJoined().getName().contains(LOCKED_PRIVATE_CHANNEL_MARKER));
       }
-    }
-  }
-
-  @Override
-  public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
-    PrivateChannelGroup privateChannelGroup = PrivateChannelGroup.VOICE_CHANNELS.get(event.getChannelLeft().getIdLong());
-    if (privateChannelGroup != null) {
-      VoiceChannel voiceChannel = privateChannelGroup.voiceChannel();
-      if (voiceChannel != null) {
-        if (voiceChannel.getMembers().isEmpty()) {
-          PrivateChannelGroup.delete(privateChannelGroup);
-        } else if (event.getMember().getIdLong() == privateChannelGroup.ownerId()) {
-          PrivateChannelGroup.promote(privateChannelGroup, voiceChannel.getMembers().get(0).getIdLong());
+    }else if(event.getChannelJoined() != null) {
+      if (Stream.of(
+        LOCKED_PRIVATE_CHANNEL_MARKER,
+        UNLOCKED_PRIVATE_CHANNEL_MARKER).anyMatch(createChannelName -> event.getChannelJoined().getName().contains(createChannelName))) {
+        PrivateChannelGroup.create(erde, event.getGuild(), event.getMember().getUser(), event.getChannelJoined().getName().contains(LOCKED_PRIVATE_CHANNEL_MARKER));
+      }
+    }else if(event.getChannelLeft() != null) {
+      PrivateChannelGroup privateChannelGroup = PrivateChannelGroup.VOICE_CHANNELS.get(event.getChannelLeft().getIdLong());
+      if (privateChannelGroup != null) {
+        VoiceChannel voiceChannel = privateChannelGroup.voiceChannel();
+        if (voiceChannel != null) {
+          if (voiceChannel.getMembers().isEmpty()) {
+            PrivateChannelGroup.delete(privateChannelGroup);
+          } else if (event.getMember().getIdLong() == privateChannelGroup.ownerId()) {
+            PrivateChannelGroup.promote(privateChannelGroup, voiceChannel.getMembers().get(0).getIdLong());
+          }
         }
       }
-    }
-    AudioChannel channelJoined = event.getChannelJoined();
-    if (Stream.of(
-      LOCKED_PRIVATE_CHANNEL_MARKER,
-      UNLOCKED_PRIVATE_CHANNEL_MARKER).anyMatch(createChannelName -> channelJoined.getName().contains(createChannelName))) {
-      PrivateChannelGroup.create(erde, event.getGuild(), event.getMember().getUser(), event.getChannelJoined().getName().contains(LOCKED_PRIVATE_CHANNEL_MARKER));
+      AudioChannel channelJoined = event.getChannelJoined();
+      if (channelJoined != null) {
+        if (Stream.of(
+          LOCKED_PRIVATE_CHANNEL_MARKER,
+          UNLOCKED_PRIVATE_CHANNEL_MARKER).anyMatch(createChannelName -> channelJoined.getName().contains(createChannelName))) {
+          PrivateChannelGroup.create(erde, event.getGuild(), event.getMember().getUser(), event.getChannelJoined().getName().contains(LOCKED_PRIVATE_CHANNEL_MARKER));
+        }
+      }
     }
   }
 
