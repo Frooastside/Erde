@@ -6,6 +6,8 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -69,6 +71,8 @@ public class Erde {
     I18n.setCurrentLanguage(language);
 
     remotePlayerManager = new DefaultAudioPlayerManager();
+    YoutubeAudioSourceManager youtubeAudioSource = new YoutubeAudioSourceManager();
+    remotePlayerManager.registerSourceManager(youtubeAudioSource);
     AudioSourceManagers.registerRemoteSources(remotePlayerManager);
     api.addEventListener(new EventAdapter(this), new PrivateChannelEventAdapter(this));
   }
